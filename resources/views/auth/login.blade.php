@@ -45,13 +45,11 @@
             @endif
         </div>
 
-        {{-- Remember me --}}
         <div class="flex items-center">
             <input id="remember" name="remember" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500">
             <label for="remember" class="ml-2 text-sm text-gray-600">Remember me</label>
         </div>
 
-        {{-- Submit --}}
         <button
             type="submit"
             class="w-full rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
