@@ -24,8 +24,7 @@ class TaskController extends Controller
             ->when($status->isNotEmpty(),   fn ($q) => $q->where('status', $status))
             ->when($priority->isNotEmpty(), fn ($q) => $q->where('priority', $priority))
             ->latest()
-            ->paginate(10)
-            ->withQueryString();
+            ->paginate(10);
 
         return view('tasks.index', compact('tasks', 'search', 'status', 'priority'));
     }

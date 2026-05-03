@@ -3,27 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Task;
-use App\Models\User;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = User::first();
-
-        // dd($user);
+        $tasks = $request->user()->tasks()->latest()->get();
 
         $stats = [
-            'total' => 10,
-            'pending' => 9,
-            'in_progress' => 8,
-            'completed' => 7
+            'total'       => $tasks->count(),
+            'pending'     => $tasks->where('status', 'pending')->count(),
+            'in_progress' => $tasks->where('status', 'in progress')->count(),
+            'completed'   => $tasks->where('status', 'completed')->count(),
         ];
 
-        $recentTasks = Task::all();
+        $recentTasks = $tasks->take(5);
 
         return view('dashboard', compact('stats', 'recentTasks'));
     }
-
 }
