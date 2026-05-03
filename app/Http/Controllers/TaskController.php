@@ -2,31 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Tag;
 use App\Models\Task;
+use App\Services\TaskService;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    public function __construct(private readonly TaskService $taskService) {}
+
     public function index(Request $request)
     {
-        $search   = $request->string('search')->trim();
-        $status   = $request->string('status')->trim();
-        $priority = $request->string('priority')->trim();
+        $tasks = $this->taskService->filteredQuery(
+            $request->user(),
+            (string) $request->string('search')->trim(),
+            (string) $request->string('status')->trim(),
+            (string) $request->string('priority')->trim(),
+        )->paginate(10);
 
-        $tasks = $request->user()->tasks()
-            ->with('tags')
-            ->when($search,   fn ($q) => $q->where(fn ($q) => $q
-                ->where('title', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%")))
-            ->when($status->isNotEmpty(),   fn ($q) => $q->where('status', $status))
-            ->when($priority->isNotEmpty(), fn ($q) => $q->where('priority', $priority))
-            ->latest()
-            ->paginate(10);
-
-        return view('tasks.index', compact('tasks', 'search', 'status', 'priority'));
+        return view('tasks.index', compact('tasks'));
     }
 
     public function create()
@@ -38,11 +34,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request)
     {
-        $task = $request->user()->tasks()->create($request->safe()->except('tags'));
-
-        if ($request->filled('tags')) {
-            $task->tags()->attach($request->validated('tags'));
-        }
+        $this->taskService->createTask($request->user(), $request->validated());
 
         return redirect()->route('tasks.index');
     }
@@ -58,9 +50,7 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        $task->update($request->safe()->except('tags'));
-
-        $task->tags()->sync($request->validated('tags', []));
+        $this->taskService->updateTask($task, $request->validated());
 
         return redirect()->route('tasks.index');
     }
@@ -69,7 +59,7 @@ class TaskController extends Controller
     {
         $this->authorize('delete', $task);
 
-        $task->delete();
+        $this->taskService->deleteTask($task);
 
         return redirect()->route('tasks.index');
     }

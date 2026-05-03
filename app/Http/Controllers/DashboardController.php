@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TaskService;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    public function __construct(private readonly TaskService $taskService) {}
+
     public function index(Request $request)
     {
-        $tasks = $request->user()->tasks()->latest()->get();
-
-        $stats = [
-            'total'       => $tasks->count(),
-            'pending'     => $tasks->where('status', 'pending')->count(),
-            'in_progress' => $tasks->where('status', 'in progress')->count(),
-            'completed'   => $tasks->where('status', 'completed')->count(),
-        ];
-
-        $recentTasks = $tasks->take(5);
+        $stats       = $this->taskService->getStats($request->user());
+        $recentTasks = $this->taskService->query($request->user())->take(5)->get();
 
         return view('dashboard', compact('stats', 'recentTasks'));
     }
