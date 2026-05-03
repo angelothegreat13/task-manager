@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Enums\TaskPriority;
+use App\Enums\TaskStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreTaskRequest extends FormRequest
 {
@@ -17,8 +19,8 @@ class StoreTaskRequest extends FormRequest
         return [
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'status'      => ['nullable', 'in:pending,in progress,completed'],
-            'priority'    => ['nullable', 'in:low,medium,high'],
+            'status'      => ['nullable', Rule::enum(TaskStatus::class)],
+            'priority'    => ['nullable', Rule::enum(TaskPriority::class)],
             'due_date'    => ['nullable', 'date'],
             'tags'        => ['nullable', 'array'],
             'tags.*'      => ['integer', 'exists:tags,id'],

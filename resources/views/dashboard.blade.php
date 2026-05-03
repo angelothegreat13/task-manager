@@ -1,3 +1,4 @@
+@use('App\Enums\TaskStatus')
 @extends('layouts.master')
 
 @section('content')
@@ -43,10 +44,10 @@
                     </div>
                     <span @class([
                         'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                        'bg-yellow-100 text-yellow-700' => $task->status === 'pending',
-                        'bg-blue-100 text-blue-700'   => $task->status === 'in progress',
-                        'bg-teal-100 text-teal-700'   => $task->status === 'completed',
-                    ])>{{ Str::headline($task->status) }}</span>
+                        'bg-yellow-100 text-yellow-700' => $task->status === TaskStatus::Pending,
+                        'bg-blue-100 text-blue-700'     => $task->status === TaskStatus::InProgress,
+                        'bg-teal-100 text-teal-700'     => $task->status === TaskStatus::Completed,
+                    ])>{{ Str::headline($task->status->value) }}</span>
                 </div>
             @empty
                 <p class="px-6 py-8 text-center text-sm text-gray-400">No tasks yet. <a href="{{ route('tasks.create') }}" class="text-teal-600 hover:underline">Create one</a>.</p>

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\TaskStatus;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,10 +19,10 @@ class TaskService
     {
         return $this->query($user)
             ->with('tags')
-            ->when($search, fn ($q) => $q->where(fn ($q) => $q
+            ->when($search,   fn ($q) => $q->where(fn ($q) => $q
                 ->where('title', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%")))
-            ->when($status, fn ($q) => $q->where('status', $status))
+            ->when($status,   fn ($q) => $q->where('status', $status))
             ->when($priority, fn ($q) => $q->where('priority', $priority));
     }
 
@@ -29,7 +30,7 @@ class TaskService
     {
         $task = $user->tasks()->create(Arr::except($data, 'tags'));
 
-        if (! empty($data['tags'])) {
+        if (!empty($data['tags'])) {
             $task->tags()->attach($data['tags']);
         }
 
@@ -54,10 +55,10 @@ class TaskService
         $tasks = $this->query($user)->get();
 
         return [
-            'total' => $tasks->count(),
-            'pending' => $tasks->where('status', 'pending')->count(),
-            'in_progress' => $tasks->where('status', 'in progress')->count(),
-            'completed' => $tasks->where('status', 'completed')->count(),
+            'total'       => $tasks->count(),
+            'pending'     => $tasks->where('status', TaskStatus::Pending)->count(),
+            'in_progress' => $tasks->where('status', TaskStatus::InProgress)->count(),
+            'completed'   => $tasks->where('status', TaskStatus::Completed)->count(),
         ];
     }
 }

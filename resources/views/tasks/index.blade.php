@@ -1,3 +1,5 @@
+@use('App\Enums\TaskStatus')
+@use('App\Enums\TaskPriority')
 @extends('layouts.master')
 
 @section('content')
@@ -56,18 +58,18 @@
                         <td class="px-6 py-4">
                             <span @class([
                                 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                                'bg-yellow-100 text-yellow-700' => $task->status === 'pending',
-                                'bg-blue-100 text-blue-700'     => $task->status === 'in progress',
-                                'bg-teal-100 text-teal-700'     => $task->status === 'completed',
-                            ])>{{ Str::headline($task->status) }}</span>
+                                'bg-yellow-100 text-yellow-700' => $task->status === TaskStatus::Pending,
+                                'bg-blue-100 text-blue-700'     => $task->status === TaskStatus::InProgress,
+                                'bg-teal-100 text-teal-700'     => $task->status === TaskStatus::Completed,
+                            ])>{{ Str::headline($task->status->value) }}</span>
                         </td>
                         <td class="px-6 py-4">
                             <span @class([
                                 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-                                'bg-gray-100 text-gray-600'     => $task->priority === 'low',
-                                'bg-orange-100 text-orange-600' => $task->priority === 'medium',
-                                'bg-red-100 text-red-600'       => $task->priority === 'high',
-                            ])>{{ Str::headline($task->priority) }}</span>
+                                'bg-gray-100 text-gray-600'     => $task->priority === TaskPriority::Low,
+                                'bg-orange-100 text-orange-600' => $task->priority === TaskPriority::Medium,
+                                'bg-red-100 text-red-600'       => $task->priority === TaskPriority::High,
+                            ])>{{ Str::headline($task->priority->value) }}</span>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             {{ $task->due_date?->format('M d, Y') ?? '—' }}

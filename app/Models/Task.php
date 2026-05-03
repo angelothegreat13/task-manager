@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\TaskPriority;
+use App\Enums\TaskStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,6 +23,8 @@ class Task extends Model
     {
         return [
             'due_date' => 'date',
+            'status'   => TaskStatus::class,
+            'priority' => TaskPriority::class,
         ];
     }
 
