@@ -13,7 +13,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
-    Route::resource('tasks', TaskController::class);
+    Route::resource('tasks', TaskController::class)->except('show');
 });
 
 Route::middleware(['guest'])->group(function() {
