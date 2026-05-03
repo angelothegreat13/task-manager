@@ -9,12 +9,6 @@ use App\Http\Controllers\Api\V1\TaskApiController;
 // })->middleware('auth:sanctum');
 
 
-Route::prefix('v1')->group(function() {
-    Route::get('/test', function() {
-        return response()->json([
-            'test' => 'test value'
-        ]);        
-    });
-
+Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::apiResource('tasks', TaskApiController::class);
 });
