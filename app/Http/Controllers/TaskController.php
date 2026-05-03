@@ -21,8 +21,8 @@ class TaskController extends Controller
             ->when($search,   fn ($q) => $q->where(fn ($q) => $q
                 ->where('title', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%")))
-            ->when($status,   fn ($q) => $q->where('status', $status))
-            ->when($priority, fn ($q) => $q->where('priority', $priority))
+            ->when($status->isNotEmpty(),   fn ($q) => $q->where('status', $status))
+            ->when($priority->isNotEmpty(), fn ($q) => $q->where('priority', $priority))
             ->latest()
             ->paginate(10)
             ->withQueryString();
