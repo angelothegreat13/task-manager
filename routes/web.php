@@ -5,12 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/', [DashboardController::class, 'index']);
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+
+    Route::resource('tasks', TaskController::class);
 });
 
 Route::middleware(['guest'])->group(function() {

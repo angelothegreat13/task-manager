@@ -8,31 +8,35 @@ class TaskController extends Controller
 {
     public function index()
     {
-
+        //
     }
 
     public function create()
     {
-
+        //
     }
 
-    public function store()
+    public function store(Request $request)
     {
-
     }
 
-    public function edit()
+    public function show(string $id)
     {
-
+        //
     }
 
-    public function update()
+    public function edit(string $id)
     {
-
+        //
     }
 
-    public function destroy()
+    public function update(Request $request, string $id)
     {
+        //
+    }
 
+    public function destroy(string $id)
+    {
+        //
     }
 }
