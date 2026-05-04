@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\TaskStatus;
+use App\Events\TaskCreated;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,6 +34,8 @@ class TaskService
         if (!empty($data['tags'])) {
             $task->tags()->attach($data['tags']);
         }
+
+        event(new TaskCreated($task));
 
         return $task;
     }
