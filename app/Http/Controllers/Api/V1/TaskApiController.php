@@ -16,42 +16,44 @@ class TaskApiController extends Controller
 {
     public function __construct(private readonly TaskService $taskService) {}
 
-    public function index()
+    public function index(Request $request): AnonymousResourceCollection
     {
-        // $tasks = Task::with('tags')->paginate(10);
-        $tasks = Task::with('tags')->paginate(10);
+        $tasks = $this->taskService->filteredQuery(
+            $request->user(),
+            (string) $request->string('search')->trim(),
+            (string) $request->string('status')->trim(),
+            (string) $request->string('priority')->trim(),
+        )->paginate(10);
 
-        return TaskResource::collection($tasks)->response()->setStatusCode(202);
+        return TaskResource::collection($tasks);
     }
 
     public function store(StoreTaskRequest $request): TaskResource
     {
-        // $task = $request->user()->tasks()->create($request->safe()->except('tags'));
-        // $task->tags()->sync($request->validated('tags', []));
+        $task = $this->taskService->createTask($request->user(), $request->validated());
 
-        // return new TaskResource($task->load('tags'));
+        return (new TaskResource($task->load('tags')))->response()->setStatusCode(201);
     }
 
     public function show(Task $task): TaskResource
     {
-        // $this->authorize('view', $task);
+        $this->authorize('view', $task);
 
-        // return new TaskResource($task->load('tags'));
+        return new TaskResource($task->load('tags'));
     }
 
     public function update(UpdateTaskRequest $request, Task $task): TaskResource
     {
-        // $task->update($request->safe()->except('tags'));
-        // $task->tags()->sync($request->validated('tags', []));
+        $task = $this->taskService->updateTask($task, $request->validated());
 
-        // return new TaskResource($task->load('tags'));
+        return new TaskResource($task->load('tags'));
     }
 
     public function destroy(Task $task): Response
     {
-        // $this->authorize('delete', $task);
-        // $task->delete();
+        $this->authorize('delete', $task);
+        $this->taskService->deleteTask($task);
 
-        // return response()->noContent();
+        return response()->noContent();
     }
 }
