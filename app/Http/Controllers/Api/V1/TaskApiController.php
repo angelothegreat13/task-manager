@@ -10,6 +10,7 @@ use App\Models\Task;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 class TaskApiController extends Controller
@@ -28,7 +29,7 @@ class TaskApiController extends Controller
         return TaskResource::collection($tasks);
     }
 
-    public function store(StoreTaskRequest $request): TaskResource
+    public function store(StoreTaskRequest $request): JsonResponse
     {
         $task = $this->taskService->createTask($request->user(), $request->validated());
 
