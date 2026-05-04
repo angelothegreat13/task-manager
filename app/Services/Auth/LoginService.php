@@ -2,12 +2,13 @@
 
 namespace App\Services\Auth;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class LoginService
 {
-    public function authenticate(array $credentials, bool $remember): void
+    public function authenticate(array $credentials, bool $remember = false): User
     {
         if (!Auth::attempt($credentials, $remember)) {
             throw ValidationException::withMessages([
@@ -15,6 +16,6 @@ class LoginService
             ]);
         }
 
-        session()->regenerate();
+        return Auth::user();
     }
 }
