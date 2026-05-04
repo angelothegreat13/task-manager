@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use App\Services\Auth\RegisterService;
 
 use App\Http\Controllers\Controller;
@@ -22,7 +23,9 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
-        $this->registerService->handle($request->validated());
+        $user = $this->registerService->handle($request->validated());
+
+        Auth::login($user);
 
         return redirect()->route('dashboard');
     }

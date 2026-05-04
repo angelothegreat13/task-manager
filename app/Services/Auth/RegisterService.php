@@ -4,7 +4,6 @@ namespace App\Services\Auth;
 
 use App\Models\User;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 
@@ -14,17 +13,13 @@ class RegisterService
         private readonly User $user
     ) {}
 
-    public function handle(array $userData): void
+    public function handle(array $userData): User
     {
-        $user = User::create([
-            'name' => $userData['name'],
-            'email' => $userData['email'],
-            'password' => Hash::make($userData['password'])
-        ]);
-
+        $user = User::create($userData);
+        
         event(new Registered($user));
 
-        Auth::login($user);
+        return $user;
     }
 }
 
