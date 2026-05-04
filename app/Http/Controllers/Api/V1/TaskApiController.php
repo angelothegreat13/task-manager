@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use App\Jobs\TaskJob;
 
 class TaskApiController extends Controller
 {
@@ -39,6 +40,8 @@ class TaskApiController extends Controller
     public function show(Task $task): TaskResource
     {
         $this->authorize('view', $task);
+
+        TaskJob::dispatch($task);
 
         return new TaskResource($task->load('tags'));
     }
